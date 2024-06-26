@@ -236,6 +236,14 @@ class App {
     document
       .getElementById('workout-items')
       .addEventListener('click', this._removeItem.bind(this, 'workout'));
+    //   Filter item
+    // keyup => filter as typing
+    document
+      .getElementById('filter-meals')
+      .addEventListener('keyup', this._filterItem.bind(this, 'meal'));
+    document
+      .getElementById('filter-workouts')
+      .addEventListener('keyup', this._filterItem.bind(this, 'workout'));
   }
 
   // New meal
@@ -293,6 +301,21 @@ class App {
         e.target.closest('.card').remove();
       }
     }
+  }
+  //   Filter items
+  _filterItem(type, e) {
+    const text = e.target.value.toLowerCase();
+    document.querySelectorAll(`#${type}-items .card`).forEach((item) => {
+      // The item e do forEach over is the card;
+      // We want the name property which is a child of a child
+      const name = item.firstElementChild.firstElementChild.textContent;
+      //   If it returns something, display it, else hide it;
+      if (name.toLocaleLowerCase().indexOf(text) !== -1) {
+        item.style.display = 'block';
+      } else {
+        item.style.display = 'none';
+      }
+    });
   }
 }
 
