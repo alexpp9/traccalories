@@ -22,6 +22,8 @@ class CalorieTracker {
     this._meals.push(meal);
     // Update total calories by number of calories from meal;
     this._totalCalories += meal.calories;
+    // Add new meal To DOM
+    this._displayNewMeal(meal);
     // To render the state of the App, after a new meal/workout's been added;
     this._render();
   }
@@ -29,6 +31,7 @@ class CalorieTracker {
     this._workouts.push(workout);
     // Substract calories "burned";
     this._totalCalories -= workout.calories;
+    this._displayNewWorkout(workout);
     // To render the state of the App, after a new meal/workout's been added;
     this._render();
   }
@@ -102,6 +105,55 @@ class CalorieTracker {
     const width = Math.min(percentage, 100);
     progressEl.style.width = `${width}%`;
     progressEl.setAttribute('title', `${width.toFixed(2)}%`);
+  }
+
+  //   Display new meal to DOM
+  _displayNewMeal(meal) {
+    const mealsEl = document.getElementById('meal-items');
+    const mealEl = document.createElement('div');
+    mealEl.classList.add('card', 'my-2');
+    // create <id> for each meal -> delete/update
+    mealEl.setAttribute('data-id', meal.id);
+    mealEl.innerHTML = `
+        <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between">
+            <h4 class="mx-1">${meal.name}</h4>
+            <div
+            class="fs-1 bg-primary text-white text-center rounded-2 px-2 px-sm-5"
+            >
+            ${meal.calories}
+            </div>
+            <button class="delete btn btn-danger btn-smx-2">
+            <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        </div>
+    `;
+    mealsEl.appendChild(mealEl);
+  }
+  //   Display new workout to DOM
+  _displayNewWorkout(workout) {
+    const workoutsEl = document.getElementById('workout-items');
+    const workoutEl = document.createElement('div');
+    workoutEl.classList.add('card', 'my-2');
+    // create <id> for each workout -> delete/update
+    workoutEl.setAttribute('data-id', workout.id);
+    workoutEl.innerHTML = `
+        <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between">
+            <h4 class="mx-1">${workout.name}</h4>
+            <div
+            class="fs-1 bg-secondary text-white text-center rounded-2 px-2 px-sm-5"
+            >
+            ${workout.calories}
+            </div>
+            <button class="delete btn btn-danger btn-smx-2">
+            <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        </div>
+    `;
+    workoutsEl.appendChild(workoutEl);
   }
 
   //   Renders state
