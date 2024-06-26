@@ -35,6 +35,35 @@ class CalorieTracker {
     // To render the state of the App, after a new meal/workout's been added;
     this._render();
   }
+
+  //   remove meal
+  removeMeal(id) {
+    // Gives the index of the meal that matches the id passed in;
+    const index = this._meals.findIndex((meal) => meal.id === id);
+    // Check if match (if -1)
+    if (index !== -1) {
+      const meal = this._meals[index];
+      // Substracts from total calories
+      this._totalCalories -= meal.calories;
+      // Removes the meal from the Array;
+      this._meals.splice(index, 1);
+      this._render();
+    }
+  }
+  //   remove workout
+  removeWorkout(id) {
+    // Gives the index of the meal that matches the id passed in;
+    const index = this._workouts.findIndex((workout) => workout.id === id);
+    // Check if match (if -1)
+    if (index !== -1) {
+      const workout = this._workouts[index];
+      // Substracts from total calories
+      this._totalCalories += workout.calories;
+      // Removes the workout from the Array;
+      this._workouts.splice(index, 1);
+      this._render();
+    }
+  }
   // Private methods
   //   Display the total of calories (gain/loss)
   _displayCaloriesTotal() {
@@ -193,12 +222,20 @@ class App {
     // Event listeners
     // When calling <this> such as below, it'll refer to the element from HTML, but we want it to refer to the instance of the APP calling the constructor;
     // For that, we need to <bind>
+    // Add new meal/workout
     document
       .getElementById('meal-form')
       .addEventListener('submit', this._newItem.bind(this, 'meal'));
     document
       .getElementById('workout-form')
       .addEventListener('submit', this._newItem.bind(this, 'workout'));
+    //   remove item meal/workout -> event delegation;
+    document
+      .getElementById('meal-items')
+      .addEventListener('click', this._removeItem.bind(this, 'meal'));
+    document
+      .getElementById('workout-items')
+      .addEventListener('click', this._removeItem.bind(this, 'workout'));
   }
 
   // New meal
@@ -232,6 +269,30 @@ class App {
     const bsCollapse = new bootstrap.Collapse(collapseItem, {
       toggle: true,
     });
+  }
+
+  // Remove item
+  _removeItem(type, e) {
+    // Targets everything inside the card elements with the class either .delete or fa-xmark;
+    // That's what will trigger the deletion;
+    if (
+      e.target.classList.contains('delete') ||
+      e.target.classList.contains('fa-xmark')
+    ) {
+      if (confirm('Are you sure?')) {
+        // get closesc element with .card class from the target
+        const id = e.target.closest('.card').getAttribute('data-id');
+
+        // Decide what to delete
+        type === 'meal'
+          ? // Remove from dashboard
+            this._tracker.removeMeal(id)
+          : this._tracker.removeWorkout(id);
+
+        // Remove from DOM
+        e.target.closest('.card').remove();
+      }
+    }
   }
 }
 
