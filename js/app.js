@@ -6,7 +6,12 @@ class CalorieTracker {
     this._totalCalories = 0;
     this._meals = [];
     this._workouts = [];
+
+    // Execute here because the constructor runs immediatly when one instantiates the CalorieTracker class;
+    this._displayCaloriesTotal();
   }
+
+  // Public methods/API
   // Adds meal to meals array - meal shall be an object;
   addMeal(meal) {
     this._meals.push(meal);
@@ -17,6 +22,11 @@ class CalorieTracker {
     this._workouts.push(workout);
     // Substract calories "burned";
     this._totalCalories -= workout.calories;
+  }
+  // Private methods
+  _displayCaloriesTotal() {
+    const totalCaloriesEl = document.getElementById('calories-total');
+    totalCaloriesEl.innerHTML = this._totalCalories;
   }
 }
 
