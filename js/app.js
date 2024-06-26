@@ -64,6 +64,24 @@ class CalorieTracker {
       this._render();
     }
   }
+
+  //   Reset App
+  reset() {
+    this._totalCalories = 0;
+    this._meals = [];
+    this._workouts = [];
+    this._render();
+  }
+
+  //   Set limit
+  setLimit(calorieLimit) {
+    // Set it to the one we pass through
+    this._calorieLimit = calorieLimit;
+    // Display it
+    this._displayCaloriesLimit();
+    // Render state
+    this._render();
+  }
   // Private methods
   //   Display the total of calories (gain/loss)
   _displayCaloriesTotal() {
@@ -244,6 +262,14 @@ class App {
     document
       .getElementById('filter-workouts')
       .addEventListener('keyup', this._filterItem.bind(this, 'workout'));
+    // Reset
+    document
+      .getElementById('reset')
+      .addEventListener('click', this._reset.bind(this));
+    // Change Limit
+    document
+      .getElementById('limit-form')
+      .addEventListener('submit', this._setLimit.bind(this));
   }
 
   // New meal
@@ -316,6 +342,34 @@ class App {
         item.style.display = 'none';
       }
     });
+  }
+
+  //   Reset
+  _reset() {
+    this._tracker.reset(); // This will deal with dashboard calories
+    // DOM reset
+    document.getElementById('meal-items').innerHTML = '';
+    document.getElementById('workout-items').innerHTML = '';
+    // Clear filter input value
+    document.getElementById('filter-meals').value = '';
+    document.getElementById('filter-workouts').value = '';
+  }
+
+  //   Set limit
+  _setLimit(e) {
+    e.preventDefault();
+
+    const limit = document.getElementById('limit');
+    if (limit.value === '') {
+      alert('Please add a limit');
+      return;
+    }
+    this._tracker.setLimit(+limit.value);
+    limit.value = '';
+    // Close bootstrap modal
+    const modalEl = document.getElementById('limit-modal');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    modal.hide();
   }
 }
 
