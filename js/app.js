@@ -101,7 +101,7 @@ class CalorieTracker {
 
     const width = Math.min(percentage, 100);
     progressEl.style.width = `${width}%`;
-    progressEl.setAttribute('title', `${width}%`);
+    progressEl.setAttribute('title', `${width.toFixed(2)}%`);
   }
 
   //   Renders state
@@ -134,17 +134,74 @@ class Workout {
 }
 
 // Initialize tracker
-const tracker = new CalorieTracker();
-const breakfast = new Meal('Breakfast', 1691);
-const lunch = new Meal('Lunch', 550);
-tracker.addMeal(breakfast);
-tracker.addMeal(lunch);
+class App {
+  constructor() {
+    this._tracker = new CalorieTracker();
 
-const run = new Workout('Morning run', 331);
-const gym = new Workout('Gym session', 1200);
-tracker.addWorkout(run);
-tracker.addWorkout(gym);
+    // Event listeners
+    // When calling <this> such as below, it'll refer to the element from HTML, but we want it to refer to the instance of the APP calling the constructor;
+    // For that, we need to <bind>
+    document
+      .getElementById('meal-form')
+      .addEventListener('submit', this._newMeal.bind(this));
+    document
+      .getElementById('workout-form')
+      .addEventListener('submit', this._newWorkout.bind(this));
+  }
 
-console.log(tracker._meals[0]);
-console.log(tracker._workouts[0]);
-console.log(tracker._totalCalories);
+  // New meal
+  _newMeal(e) {
+    e.preventDefault();
+
+    // Get fields
+    const name = document.getElementById('meal-name');
+    const calories = document.getElementById('meal-calories');
+
+    // Validate inputs
+    if (name.value === '' || calories.value === '') {
+      alert('Please fill in all fields');
+      return;
+    }
+    // The <+> is there to make it number from string;
+    const meal = new Meal(name.value, +calories.value);
+
+    this._tracker.addMeal(meal);
+    name.value = '';
+    calories.value = '';
+
+    // Retract form after submit
+    const collapseMeal = document.getElementById('collapse-meal');
+    const bsCollapse = new bootstrap.Collapse(collapseMeal, {
+      toggle: true,
+    });
+  }
+  // New workout
+  _newWorkout(e) {
+    e.preventDefault();
+
+    // Get fields
+    const name = document.getElementById('workout-name');
+    const calories = document.getElementById('workout-calories');
+
+    // Validate inputs
+    if (name.value === '' || calories.value === '') {
+      alert('Please fill in all fields');
+      return;
+    }
+    // The <+> is there to make it number from string;
+    const workout = new Workout(name.value, +calories.value);
+
+    this._tracker.addWorkout(workout);
+    name.value = '';
+    calories.value = '';
+
+    // Retract form after submit
+    const collapseWorkout = document.getElementById('collapse-workout');
+    const bsCollapse = new bootstrap.Collapse(collapseWorkout, {
+      toggle: true,
+    });
+  }
+}
+
+// Initialize App
+const app = new App();
