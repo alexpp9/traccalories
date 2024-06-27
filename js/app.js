@@ -90,6 +90,7 @@ class CalorieTracker {
     this._totalCalories = 0;
     this._meals = [];
     this._workouts = [];
+    Storage.clearAll();
     this._render();
   }
 
@@ -355,9 +356,19 @@ class Storage {
     // Reinsert array in local storage without removed item;
     localStorage.setItem('workouts', JSON.stringify(workouts));
   }
+  //   Cler all
+  static clearAll() {
+    // Individually done so we can keep <calorie limit>
+    localStorage.removeItem('totalCalories');
+    localStorage.removeItem('meals');
+    localStorage.removeItem('workouts');
+
+    // This can be used to clear all
+    // localStorage.clear();
+  }
 }
 
-// Initialize tracker
+// Initialize
 class App {
   constructor() {
     this._tracker = new CalorieTracker();
